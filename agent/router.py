@@ -1,10 +1,6 @@
 from typing import TypedDict
 
-import google.generativeai as genai
-
-genai.configure(api_key="GEMINI_API_KEY")
-
-model = genai.GenerativeModel("gemini-2.0-flash")
+from agent.llm import llm
 
 class State(TypedDict):
     input: str
@@ -14,9 +10,9 @@ class State(TypedDict):
 def llm_call_router(state: State):
     print("Reached router")
     prompt = (
-        "You are a router. Classify this input as 'munition', 'fuel', or 'range'. "
-        "Only return one word.\n"
+        "You are a router. Classify this input as 'munition', 'fuel', or 'range'. If the user asks for remote assistance, classify as 'remote' and add all user input after this.\n"
+        "Only return one word, and in remote context, include the user input after 'remote'.\n"
         f"User: {state['input']}"
     )
-    decision = model.generate_content(prompt).text.strip().lower()
+    decision = llm().generate_content(prompt).text.strip().lower()
     return {"decision": decision}

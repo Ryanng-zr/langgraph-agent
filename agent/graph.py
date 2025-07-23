@@ -5,6 +5,7 @@ from agent.router import llm_call_router
 from agent.nodes.apg_agent import APG_Agent
 from agent.nodes.mon_agent import MON_Agent
 from agent.nodes.mps_agent import MPS_Agent
+from agent.remote_nodes.remote_node import call_remote_graph
 
 # --- State definition ---
 class State(TypedDict):
@@ -21,8 +22,10 @@ def route_decision(state: State):
             return "MON_Agent"
         case "range":
             return "MPS_Agent"
-        case _:
-            raise ValueError(f"Unknown decision: {state['decision']}")
+        case "remote":
+            return "call_remote_graph"
+        # case _:
+        #     raise ValueError(f"Unknown decision: {state['decision']}")
 
 # --- Graph construction ---
 def build_langgraph():
@@ -37,16 +40,19 @@ def build_langgraph():
     graph.add_node("APG_Agent", APG_Agent)
     graph.add_node("MON_Agent", MON_Agent)
     graph.add_node("MPS_Agent", MPS_Agent)
+    graph.add_node("call_remote_graph", call_remote_graph)
 
     graph.add_conditional_edges("llm_call_router", route_decision, {
         "APG_Agent": "APG_Agent",
         "MON_Agent": "MON_Agent",
         "MPS_Agent": "MPS_Agent",
+        "call_remote_graph": "call_remote_graph"
     })
 
     graph.add_edge("APG_Agent", END)
     graph.add_edge("MON_Agent", END)
     graph.add_edge("MPS_Agent", END)
+    graph.add_edge("call_remote_graph", END)
 
     workflow = graph.compile()
     return workflow

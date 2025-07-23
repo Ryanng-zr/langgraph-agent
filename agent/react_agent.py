@@ -26,32 +26,32 @@ tools = [
 
 # ReAct Prompt
 REACT_PROMPT = PromptTemplate.from_template("""
-You are an AI agent that must always use tools to answer questions. Never answer directly. Your job is to think, select the appropriate tool, and execute it.
+    You are an AI agent that must always use tools to answer questions. Never answer directly. Your job is to think, select the appropriate tool, and execute it.
 
-You have access to the following tools:
+    You have access to the following tools:
 
-{tools}
+    {tools}
 
-Use the following strict format:
+    Use the following strict format:
 
-Question: the input question you must answer  
-Thought: think carefully about which tool to use  
-Action: the action to take, must be one of [{tool_names}]  
-Action Input: the input to the action (plain string or number)  
-Observation: the result of the action  
-... (repeat Thought/Action/Observation as needed)  
-Thought: I now know the final answer  
-Final Answer: the final answer to the original question
+    Question: the input question you must answer  
+    Thought: think carefully about which tool to use  
+    Action: the action to take, must be one of [{tool_names}]  
+    Action Input: the input to the action (plain string or number)  
+    Observation: the result of the action  
+    ... (repeat Thought/Action/Observation as needed)  
+    Thought: I now know the final answer  
+    Final Answer: the final answer to the original question
 
-IMPORTANT:
-- Do NOT skip tool usage.
-- Do NOT answer directly unless you’ve used at least one tool.
-- Do NOT return generic answers like “I can’t do that.”
+    IMPORTANT:
+    - Do NOT skip tool usage.
+    - Do NOT answer directly unless you’ve used at least one tool.
+    - Do NOT return generic answers like “I can’t do that.”
 
-Begin!
+    Begin!
 
-Question: {input}
-{agent_scratchpad}
+    Question: {input}
+    {agent_scratchpad}
 """)
 
 # Create ReAct agent + executor
